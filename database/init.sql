@@ -23,7 +23,5 @@ CREATE TABLE ecos (
     INDEX idx_zona (zona)
 );
 
-INSERT INTO ecos (texto, x, y, z, zona) VALUES
-('¿Alguien más escucha el zumbido?', 9, 1.5, -2, 'prado'),
-('La puerta amarilla no estaba aquí ayer.', 17, 1.6, -14, 'prado'),
-('No mires al agujero mucho tiempo.', 30, 1.4, 12, 'prado');
+-- Los ecos iniciales los agrega el backend al arrancar (ECOS_INICIALES en backend/index.js),
+-- solo los que falten: así también llegan a una base que ya existía.

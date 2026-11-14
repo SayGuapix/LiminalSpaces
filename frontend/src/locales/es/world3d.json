@@ -54,5 +54,11 @@
     "step2": "Escribe tu mensaje (máx. {{max}} caracteres) y pulsa Enter",
     "step3": "Queda flotando ahí como una luz; quien se acerque la puede leer",
     "step4": "Mira una firma y pulsa E para decir «Yo también estuve aquí»"
+  },
+  "oddities": {
+    "tvOff": "Apagar la tele",
+    "phoneAnswer": "Contestar el teléfono",
+    "phoneVoice": "«…no deberías estar aquí»",
+    "exit": "SALIDA"
   }
 }

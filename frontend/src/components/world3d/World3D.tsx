@@ -394,9 +394,10 @@ function Crosshair() {
   );
 }
 
-/** Debajo de la mira: qué hace E con lo que se está mirando (p. ej. un eco). */
+/** Debajo de la mira: qué hace E con lo que se está mirando (p. ej. un eco), o solo un texto si no hay acción. */
 function TargetHint({ light }: { light: boolean }) {
   const label = useSyncExternalStore(targetStore.subscribe, () => targetStore.get()?.label);
+  const hasAction = useTargetHasAction();
   if (!label) return null;
   return (
     <div className="pointer-events-none absolute inset-x-0 top-1/2 mt-6 flex justify-center">
@@ -405,7 +406,7 @@ function TargetHint({ light }: { light: boolean }) {
           light ? "text-zinc-700" : "text-white/85 [text-shadow:0_1px_3px_rgba(0,0,0,0.8)]"
         }`}
       >
-        <Kbd>E</Kbd>
+        {hasAction && <Kbd>E</Kbd>}
         {label}
       </span>
     </div>

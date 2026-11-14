@@ -329,7 +329,7 @@ export default function Player({ controlsRef, colliders, onLockChange, onIntroDo
       if (obj) found = obj.userData.interactable as Interactable;
     }
     // Siempre se guarda el objeto más reciente (su acción puede depender del estado actual,
-    // p. ej. el switch de Auto Scroll); la interfaz solo se avisa si cambia lo que muestra.
+    // p. ej. la tele que se apaga); la interfaz solo se avisa si cambia lo que muestra.
     const previous = targetStore.get();
     targetStore.set(found, found?.id !== previous?.id || found?.label !== previous?.label);
   });

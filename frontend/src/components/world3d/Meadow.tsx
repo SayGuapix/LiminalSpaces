@@ -10,7 +10,8 @@
 //   cálida (otras no), faroles con su halo y una baliza roja que parpadea en la torre.
 //
 // Rarezas: una casa al revés clavada por el techo, otra enterrada hasta el segundo
-// piso, otra flotando, una puerta sola y una escalera que no lleva a ningún lado.
+// piso, otra flotando, una puerta sola y una escalera que no lleva a ningún lado
+// (más rarezas sueltas en Oddities.tsx).
 // Dos casas se pueden entrar y por dentro son enormes (interiorMaps.ts e Interiors.tsx):
 // aquí solo está su cascarón, con la puerta.
 //
@@ -28,6 +29,7 @@ import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { at, box, painted } from "./geometryKit";
 import { viewFollowers } from "./viewFollowers";
+import { NIGHT_TINT } from "./worldMaterials";
 import {
   DOOR,
   FENCES,
@@ -53,8 +55,6 @@ import {
 type BlendRef = MutableRefObject<number>;
 
 const TRIM = "#fbfaf3";
-/** Color por el que se multiplica todo de noche (luz de luna azulada). */
-const NIGHT_TINT = new THREE.Color("#27304a");
 const WHITE = new THREE.Color("#ffffff");
 /** Luz de noche: cálida, de bombilla incandescente (faroles y ventanas). */
 const WARM_LIGHT = new THREE.Color("#ffd9a0");

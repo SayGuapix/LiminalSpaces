@@ -46,3 +46,6 @@ export function shadowUniforms() {
     uShadowStrength: { value: SHADOW_STRENGTH.dark },
   };
 }
+
+/** Color por el que se multiplica todo de noche (luz de luna azulada): casas, cercas y rarezas. */
+export const NIGHT_TINT = new THREE.Color("#27304a");

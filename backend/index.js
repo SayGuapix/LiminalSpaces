@@ -28,8 +28,55 @@ db.query(`CREATE TABLE IF NOT EXISTS ecos (
   creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_zona (zona)
 )`, (err) => {
-  if (err) console.error('No se pudo crear la tabla ecos:', err.message);
+  if (err) return console.error('No se pudo crear la tabla ecos:', err.message);
+  sembrarEcos();
 });
+
+// Ecos iniciales repartidos por el mundo (prado e interiores de las casas). Se agregan al
+// arrancar solo los que falten (por su texto), así que nunca se duplican y una base que ya
+// existía también los recibe. Los interiores están lejos del prado: x de 400 en adelante
+// y el piso a y = -50 (ver interiorMaps.ts).
+const ECOS_INICIALES = [
+  // [texto, x, y, z, zona, likes]
+  ['¿Alguien más escucha el zumbido?', 9, 1.5, -2, 'prado', 4],
+  ['La puerta amarilla no estaba aquí ayer.', 17, 1.6, -14, 'prado', 2],
+  ['No mires al agujero mucho tiempo.', 30, 1.4, 12, 'prado', 6],
+  ['Despertaste aquí también, ¿verdad?', 5, 1.6, 8, 'prado', 9],
+  ['Alguien dejó la tele prendida. No hay enchufe.', -11.5, 1.5, 12, 'prado', 3],
+  ['Los columpios se mueven solos. No hay viento.', 33.5, 1.5, 20.5, 'prado', 5],
+  ['La máquina solo acepta monedas que no existen.', -3.5, 1.6, -3, 'prado', 2],
+  ['Contesté el teléfono. Era mi propia voz.', 42, 1.5, 4, 'prado', 7],
+  ['El agua de la piscina no moja.', -19, 1.3, 31.5, 'prado', 1],
+  ['SALIDA. Llevo horas caminando hacia ella.', -26, 1.6, 10, 'prado', 4],
+  ['Salí por esta puerta. Creo que entré por otra.', -18.5, 1.6, -19.5, 'prado', 3],
+  ['Subí hasta arriba. No pasó nada. Eso fue lo peor.', -53.5, 4.6, -18.5, 'prado', 2],
+  ['Desde aquí se ve todo. No hay nadie más.', -3.5, 14.6, -46.5, 'prado', 1],
+  ['La casa está al revés. O yo.', 28, 1.5, -26.5, 'prado', 3],
+  ['Algo cayó de la casa flotante. No quise mirar.', 55, 1.5, 54, 'prado', 0],
+  ['La cerca no protege nada. O protege algo que no vemos.', 50, 1.4, -24, 'prado', 2],
+  ['El sol no se ha movido en todo el día.', 12, 1.7, 30, 'prado', 5],
+  ['No cierres la puerta.', 812.5, -48.5, -13.5, 'cloudhall', 3],
+  ['El pasillo sigue. Siempre sigue.', 806.5, -48.5, -25.5, 'cloudhall', 2],
+  ['Huele a cloro y a domingo.', 625.5, -48.5, -22.5, 'poolrooms', 4],
+  ['El agua está tibia. Nadie la calienta.', 619.5, -48.5, -28.5, 'poolrooms', 1],
+  ['El zumbido de las luces no para.', 419.5, -48.5, -29.5, 'backrooms', 6],
+  ['Conté 400 habitaciones. Todas iguales.', 431.5, -48.5, -23.5, 'backrooms', 2],
+];
+
+// Una sola consulta para ver cuáles ya están y un solo INSERT con los que faltan
+// (varios INSERT en paralelo se bloqueaban entre sí).
+function sembrarEcos() {
+  db.query('SELECT texto FROM ecos', (err, filas) => {
+    if (err) return console.error('No se pudieron leer los ecos:', err.message);
+    const existentes = new Set(filas.map((f) => f.texto));
+    const faltan = ECOS_INICIALES.filter(([texto]) => !existentes.has(texto));
+    if (faltan.length === 0) return;
+    db.query('INSERT INTO ecos (texto, x, y, z, zona, likes) VALUES ?', [faltan], (err2) => {
+      if (err2) console.error('No se pudieron sembrar los ecos:', err2.message);
+      else console.log(`Ecos iniciales agregados: ${faltan.length}`);
+    });
+  });
+}
 
 const ZONAS = ['prado', 'backrooms', 'poolrooms', 'cloudhall'];
 const MAX_TEXTO = 140;

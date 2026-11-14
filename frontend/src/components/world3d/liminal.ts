@@ -146,7 +146,7 @@ export const HOUSES: House[] = [
   // Adentro, el pasillo de la nube (a los Backrooms se llega cayendo por el agujero).
   { kind: "enterable", interior: "cloudhall", x: 18, z: -21, rotation: 0, width: 9, depth: 7, floors: 2, wall: "#f6e7a1", roof: "#7a4a34" },
   { kind: "normal", x: 8, z: -40, rotation: -0.15, width: 5.5, depth: 5, floors: 1, wall: "#f3ebcf", roof: "#6b4a3a" },
-  // Junto a "Sobre mí". Mide lo mismo que la amarilla: su recibidor es igual (interiorMaps.ts).
+  // La de las Poolrooms. Mide lo mismo que la amarilla: su recibidor es igual (interiorMaps.ts).
   { kind: "enterable", interior: "poolrooms", x: -47, z: -2, rotation: 0, width: 9, depth: 7, floors: 2, wall: "#efe2c4", roof: "#5d4637" },
   { kind: "normal", x: -40, z: 42, rotation: 2.4, width: 6, depth: 5.5, floors: 2, wall: "#f4d9b0", roof: "#7d5240" },
   { kind: "normal", x: 30, z: 48, rotation: 3.0, width: 8, depth: 6, floors: 2, wall: "#f8eeb4", roof: "#6e4535" },
@@ -359,12 +359,36 @@ const ENTERABLE = HOUSES.filter((h) => h.kind === "enterable").map((h) => {
   return { house: h, floor: houseBase(h), halfX, halfZ };
 });
 
-/** GLSL: insideRoom(vec2 xz), 1 dentro de una casa que se puede entrar (ahí no crece pasto). */
+// --- Rarezas del prado (Oddities.tsx). El frente de cada una mira a +Z local. ---
+
+/** Cartel pintado a mano frente al punto de aparición, mirándolo. */
+export const SANTIAGO_SIGN = { x: 6.5, z: -0.75, rotation: -0.11 };
+/** Una sala de estar en medio del pasto: alfombra, sofá, mesita, lámpara y una tele con estática. */
+export const LIVING_ROOM = { x: -14, z: 14, rotation: 0 };
+/** Columpios que se mecen solos (el travesaño va a lo largo de X local). */
+export const SWINGS = { x: 36, z: 18, rotation: 0.5 };
+/** Máquina expendedora encendida, sola, mirando al punto de aparición. */
+export const VENDING = { x: -5, z: -5, rotation: 0.885 };
+/** Un teléfono público que suena cuando alguien se acerca. */
+export const PAYPHONE = { x: 44, z: 2, rotation: -1.52 };
+/** Una piscina de agua quieta en medio del prado, con su escalera. */
+export const POOL = { x: -22, z: 30, rotation: 0, width: 5, length: 3 };
+/** Un letrero de SALIDA encendido que no lleva a ningún lado. */
+export const EXIT_SIGN = { x: -28, z: 8, rotation: 1.69 };
+
+/** Donde no crece pasto aparte de las casas: la alfombra de la sala y la piscina (sin giro). */
+const BARE_PATCHES = [
+  { x: LIVING_ROOM.x, z: LIVING_ROOM.z, halfX: 1.65, halfZ: 1.45 },
+  { x: POOL.x, z: POOL.z, halfX: POOL.width / 2 + 0.3, halfZ: POOL.length / 2 + 0.3 },
+];
+const GRASSLESS = ENTERABLE.length + BARE_PATCHES.length;
+
+/** GLSL: insideRoom(vec2 xz), 1 dentro de una casa que se puede entrar o de un parche sin pasto. */
 export const ROOMS_GLSL = /* glsl */ `
-  uniform vec4 uRooms[${ENTERABLE.length}]; // x, z, medio ancho en X, medio ancho en Z
+  uniform vec4 uRooms[${GRASSLESS}]; // x, z, medio ancho en X, medio ancho en Z
   float insideRoom(vec2 p) {
     float inside = 0.0;
-    for (int i = 0; i < ${ENTERABLE.length}; i++) {
+    for (int i = 0; i < ${GRASSLESS}; i++) {
       vec2 d = abs(p - uRooms[i].xy) - uRooms[i].zw;
       inside = max(inside, step(max(d.x, d.y), 0.05));
     }
@@ -373,7 +397,12 @@ export const ROOMS_GLSL = /* glsl */ `
 `;
 
 export const roomUniforms = () => ({
-  uRooms: { value: ENTERABLE.map((e) => new THREE.Vector4(e.house.x, e.house.z, e.halfX, e.halfZ)) },
+  uRooms: {
+    value: [
+      ...ENTERABLE.map((e) => new THREE.Vector4(e.house.x, e.house.z, e.halfX, e.halfZ)),
+      ...BARE_PATCHES.map((b) => new THREE.Vector4(b.x, b.z, b.halfX, b.halfZ)),
+    ],
+  },
 });
 
 /** Altura del piso si (x, z) está dentro de una casa que se puede entrar; si no, null. */
@@ -480,6 +509,35 @@ export const lampUniforms = () => ({
 
 // --- Colisiones ---
 
+/** Un punto local (lx, lz) de una rareza, en coordenadas del mundo. */
+function oddityPoint(o: { x: number; z: number; rotation: number }, lx: number, lz: number): [number, number] {
+  const c = Math.cos(o.rotation);
+  const s = Math.sin(o.rotation);
+  return [o.x + lx * c + lz * s, o.z - lx * s + lz * c];
+}
+
+/** Colisiones de las rarezas (la piscina no choca: se puede caminar sobre el agua). */
+function oddityColliders(): Collider[] {
+  const boxAt = (o: typeof SANTIAGO_SIGN, lx: number, lz: number, w: number, d: number) => {
+    const [x, z] = oddityPoint(o, lx, lz);
+    return colliderFor([x, 0, z], o.rotation, w, d);
+  };
+  const circleAt = (o: typeof SANTIAGO_SIGN, lx: number, lz: number, r: number) => {
+    const [x, z] = oddityPoint(o, lx, lz);
+    return circleCollider(x, z, r);
+  };
+  return [
+    boxAt(SANTIAGO_SIGN, 0, 0, 2, 0.3),
+    boxAt(LIVING_ROOM, 0, 1.2, 2.1, 0.9), // sofá
+    boxAt(LIVING_ROOM, 0, -1.3, 1.4, 0.55), // mueble de la tele
+    circleAt(LIVING_ROOM, 1.3, 1.6, 0.2), // lámpara
+    ...[-1.6, 1.6].flatMap((lx) => [-0.8, 0.8].map((lz) => circleAt(SWINGS, lx, lz, 0.1))),
+    boxAt(VENDING, 0, 0, 1, 0.8),
+    circleAt(PAYPHONE, 0, 0, 0.3),
+    circleAt(EXIT_SIGN, 0, 0, 0.1),
+  ];
+}
+
 export const LIMINAL_COLLIDERS: Collider[] = [
   circleCollider(TOWER.x, TOWER.z, 2.4),
   ...LAMPS.map(([x, z]) => circleCollider(x, z, 0.15)),
@@ -497,6 +555,7 @@ export const LIMINAL_COLLIDERS: Collider[] = [
   ),
   // La puerta sola: solo sus jambas (por el hueco se sale de los Backrooms).
   ...[-1, 1].map((s) => circleCollider(LONE_DOOR.x + s * (DOOR.width / 2 + 0.075), LONE_DOOR.z, 0.04)),
+  ...oddityColliders(),
   // La escalera no choca: sus peldaños son suelo (stairsHeight) y se suben caminando.
   ...holeColliders(),
   // La cerca: círculos pequeños cada medio metro a lo largo del tramo.

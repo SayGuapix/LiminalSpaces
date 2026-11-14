@@ -33,6 +33,7 @@ import Grass from "./Grass";
 import Meadow from "./Meadow";
 import Interiors from "./Interiors";
 import Portals from "./Portals";
+import Oddities from "./Oddities";
 import { OUTDOOR_FOG, indoorAt } from "./interiorMaps";
 import { viewFollowers } from "./viewFollowers";
 import { SKY } from "./liminal";
@@ -135,6 +136,7 @@ export default function ThemeSky(props: ThemeSkyProps) {
       <Grass blend={blend} animated={props.animated} blades={props.grassBlades} fog={FOG} />
       <SkyDome blend={blend} />
       <Meadow blend={blend} animated={props.animated} />
+      <Oddities blend={blend} animated={props.animated} />
       <Interiors blend={blend} animated={props.animated} />
       <Portals blend={blend} resolutionScale={props.portalScale} />
       <SkySquares animated={props.animated} blend={blend} />

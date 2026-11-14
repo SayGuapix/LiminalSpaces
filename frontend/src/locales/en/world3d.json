@@ -54,5 +54,11 @@
     "step2": "Write your message (max. {{max}} characters) and press Enter",
     "step3": "It floats there as a light; anyone who comes close can read it",
     "step4": "Look at a signature and press E to say \"I was here too\""
+  },
+  "oddities": {
+    "tvOff": "Turn off the TV",
+    "phoneAnswer": "Answer the phone",
+    "phoneVoice": "\"…you shouldn’t be here\"",
+    "exit": "EXIT"
   }
 }
