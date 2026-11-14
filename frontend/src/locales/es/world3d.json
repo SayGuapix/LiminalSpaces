@@ -1,0 +1,58 @@
+{
+  "controls": {
+    "move": "Moverse",
+    "look": "Mirar",
+    "run": "Correr",
+    "interact": "Interactuar",
+    "pause": "Pausa",
+    "help": "Mostrar / ocultar panel",
+    "jump": "Saltar",
+    "spaceKey": "Espacio",
+    "echo": "Dejar una firma"
+  },
+  "actions": {
+    "spanish": "Cambiar a español",
+    "english": "Switch to English",
+    "toLight": "Pasar a modo claro",
+    "toDark": "Pasar a modo oscuro"
+  },
+  "clickToExplore": "Muévete o haz click para mirar con el ratón",
+  "paused": "Pausa",
+  "resume": "Continuar",
+  "pauseHint": "Enter para continuar",
+  "shortcuts": {
+    "title": "Atajos",
+    "home": "Ir al inicio",
+    "cloudhall": "Pasillo de la nube",
+    "poolrooms": "Poolrooms"
+  },
+  "backend": {
+    "title": "Backend · MySQL",
+    "loading": "Conectando con el backend…",
+    "error": "Error de conexión con el backend."
+  },
+  "echoes": {
+    "title": "Dejar una firma",
+    "hint": "Quedará flotando aquí, a la vista de quien pase después.",
+    "placeholder": "¿Qué quieres que encuentren?",
+    "send": "Dejar",
+    "sending": "Dejando…",
+    "cancel": "Cancelar",
+    "networkError": "No se pudo conectar con el backend.",
+    "like": "Yo también estuve aquí",
+    "liked": "Ya estuviste aquí",
+    "count_one": "{{count}} estuvo aquí",
+    "count_other": "{{count}} estuvieron aquí"
+  },
+  "hud": {
+    "showPanel": "Panel",
+    "hidePanel": "Ocultar panel"
+  },
+  "signatures": {
+    "title": "Cómo dejar una firma",
+    "step1": "Pulsa N donde quieras dejar tu firma",
+    "step2": "Escribe tu mensaje (máx. {{max}} caracteres) y pulsa Enter",
+    "step3": "Queda flotando ahí como una luz; quien se acerque la puede leer",
+    "step4": "Mira una firma y pulsa E para decir «Yo también estuve aquí»"
+  }
+}

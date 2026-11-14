@@ -1,0 +1,58 @@
+{
+  "controls": {
+    "move": "Move",
+    "look": "Look",
+    "run": "Run",
+    "interact": "Interact",
+    "pause": "Pause",
+    "help": "Show / hide panel",
+    "jump": "Jump",
+    "spaceKey": "Space",
+    "echo": "Leave a signature"
+  },
+  "actions": {
+    "spanish": "Cambiar a español",
+    "english": "Switch to English",
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "clickToExplore": "Move or click to look around with the mouse",
+  "paused": "Paused",
+  "resume": "Resume",
+  "pauseHint": "Enter to resume",
+  "shortcuts": {
+    "title": "Shortcuts",
+    "home": "Go to start",
+    "cloudhall": "Cloud hallway",
+    "poolrooms": "Poolrooms"
+  },
+  "backend": {
+    "title": "Backend · MySQL",
+    "loading": "Connecting to the backend…",
+    "error": "Could not connect to the backend."
+  },
+  "echoes": {
+    "title": "Leave a signature",
+    "hint": "It will float here for whoever comes by next.",
+    "placeholder": "What do you want them to find?",
+    "send": "Leave",
+    "sending": "Leaving…",
+    "cancel": "Cancel",
+    "networkError": "Could not connect to the backend.",
+    "like": "I was here too",
+    "liked": "You were here",
+    "count_one": "{{count}} was here",
+    "count_other": "{{count}} were here"
+  },
+  "hud": {
+    "showPanel": "Panel",
+    "hidePanel": "Hide panel"
+  },
+  "signatures": {
+    "title": "How to leave a signature",
+    "step1": "Press N wherever you want to sign",
+    "step2": "Write your message (max. {{max}} characters) and press Enter",
+    "step3": "It floats there as a light; anyone who comes close can read it",
+    "step4": "Look at a signature and press E to say \"I was here too\""
+  }
+}

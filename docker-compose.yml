@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: redes123
+      MYSQL_DATABASE: laboratorio
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-predes123"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - red_estudiantes
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: redes123
+      DB_NAME: laboratorio
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - red_estudiantes
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - red_estudiantes
+
+networks:
+  red_estudiantes:
+    driver: bridge
+
+volumes:
+  db_data:
